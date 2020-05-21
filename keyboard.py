@@ -34,6 +34,9 @@ def keyboardInput():
                 print("keydown")
         if press.type == pygame.KEYUP:
             print("keyup")
+        
+        x, y = pygame.mouse.get_rel()
+        print(x)
 
 
 def main():
