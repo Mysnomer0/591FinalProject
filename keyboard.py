@@ -1,13 +1,8 @@
-
 import sys
-# os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+import os
 from scipy.io import wavfile
 import contextlib
-
-with contextlib.redirect_stdout(None):
-    import pygame
-from playsound import playsound
-
+import pygame
 
 #def playSoundclip(character, stream):
 
@@ -43,15 +38,17 @@ def keyboardInput():
 
 def main():
     # initializing the game
+    os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+
     pygame.init()
     displayGraphics()
 
-    filename = "pianoSample.wav"
-    fps, sound = wavfile.read(filename)
-    pygame.mixer.pre_init(fps, size=-16, channels=2)
-    pygame.mixer.init()
-    soundArray = pygame.sndarray.make_sound(sound)
-    soundArray.play()
+    #filename = "pianoSample1.wav"
+    #fps, sound = wavfile.read(filename)
+    #pygame.mixer.pre_init(fps, size=-16, channels=2)
+    #pygame.mixer.init()
+    #soundArray = pygame.sndarray.make_sound(sound)
+    #soundArray.play()
     keyboardInput()
 
 
