@@ -1,8 +1,12 @@
 import sys
 import os
+import synthplayer
 from scipy.io import wavfile
 import contextlib
 import pygame
+import numpy as np
+import sounddevice as sd
+from synthesizer import Player, Synthesizer, Waveform
 
 #def playSoundclip(character, stream):
 
@@ -21,38 +25,44 @@ def displayGraphics():
     pygame.display.flip()
 
 # This function gets the input from the keyboard until the user presses 'esc'
-def keyboardInput():
+def keyboardInput(soundArray, keyArray):
+    isPlaying = {k: False for k in keyArray}
     while True:
         press = pygame.event.wait()
         if press.type in (pygame.KEYDOWN, pygame.KEYUP):
             key = pygame.key.name(press.key)
         if press.type == pygame.KEYDOWN:
-            if press.key == pygame.K_ESCAPE:
+            if (key in keyArray) and (not isPlaying[key]):
+                sd.play(soundArray[key])
+                isPlaying[key] = True
+            elif press.key == pygame.K_ESCAPE:
                 pygame.quit()
                 sys.exit()
-            else:
-                print("keydown")
         if press.type == pygame.KEYUP:
-            print("keyup")
-        
-        x, y = pygame.mouse.get_rel()
-        print(x)
+            sd.stop()
+            isPlaying[key] = False
 
 
 def main():
     # initializing the game
     os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
-
+    #fps = 44100
+    # sound = wavfile.read("noteA.wav")
     pygame.init()
     displayGraphics()
+    pygame.mixer.init(44100, -16, 1, 2048)
+    player = Player()
+    player.open_stream()
+    synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=1.0, osc2_waveform=Waveform.sine, use_osc2=1.0)
 
-    #filename = "pianoSample1.wav"
-    #fps, sound = wavfile.read(filename)
-    #pygame.mixer.pre_init(fps, size=-16, channels=2)
-    #pygame.mixer.init()
-    #soundArray = pygame.sndarray.make_sound(sound)
-    #soundArray.play()
-    keyboardInput()
+    frequencyArray = [130.81, 138.59, 146.83, 155.56, 164.81, 174.61, 185.00, 196.00, 207.65, 220.00, 233.08, 246.94, 261.63, 277.18, 293.66, 311.13, 329.63]
+    keyArray = ['a', 'w', 's', 'e', 'd', 'f', 't', 'g', 'y', 'h', 'u', 'j', 'k', 'o', 'l', 'p',';']
+    soundArray = {}
+    for i in range (len(frequencyArray)):
+        newSound = synthesizer.generate_constant_wave(frequencyArray[i], length=4)
+        soundArray.update({keyArray[i]:newSound})
+
+    keyboardInput(soundArray, keyArray)
 
 
 if __name__ == '__main__':
