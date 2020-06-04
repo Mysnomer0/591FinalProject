@@ -9,10 +9,11 @@ from synthesizer import Player, Synthesizer, Waveform
 
 frequencyArray = [130.81, 138.59, 146.83, 155.56, 164.81, 174.61, 185.00, 196.00, 207.65, 220.00, 233.08, 246.94,
                   261.63, 277.18, 293.66, 311.13, 329.63]
-
+synthesizer = None
 currentOctave = 3
 
 def transposeUp():
+    global synthesizer
     synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=1.0, osc2_waveform=Waveform.square, use_osc2=1.0)
     global frequencyArray
     frequencyArray = [i * 2 for i in frequencyArray]
@@ -21,7 +22,11 @@ def transposeUp():
     for i in range (len(frequencyArray)):
         newSound = synthesizer.generate_constant_wave(frequencyArray[i], length=4)
         soundArray.update({keyArray[i]:newSound})
+    keyboardInput(soundArray, keyArray)
+
+
 def transposeDown():
+    global synthesizer
     synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=1.0, osc2_waveform=Waveform.square, use_osc2=1.0)
     global frequencyArray
     frequencyArray = [i / 2 for i in frequencyArray]
@@ -30,6 +35,8 @@ def transposeDown():
     for i in range (len(frequencyArray)):
         newSound = synthesizer.generate_constant_wave(frequencyArray[i], length=4)
         soundArray.update({keyArray[i]:newSound})
+    keyboardInput(soundArray, keyArray)
+
 
 # This function displays the image 'synthImage.jpg' to the game display. This image has the instructions for using the keyboard.
 def displayGraphics():
@@ -77,8 +84,6 @@ def keyboardInput(soundArray, keyArray):
 def main():
     # initializing the game
     os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
-    #fps = 44100
-    # sound = wavfile.read("noteA.wav")
     pygame.init()
     displayGraphics()
     pygame.mixer.init(44100, -16, 1, 2048)
