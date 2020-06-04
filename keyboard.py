@@ -4,12 +4,31 @@ import synthplayer
 from scipy.io import wavfile
 import contextlib
 import pygame
-import numpy as np
 import sounddevice as sd
 from synthesizer import Player, Synthesizer, Waveform
 
-#def playSoundclip(character, stream):
+frequencyArray = [130.81, 138.59, 146.83, 155.56, 164.81, 174.61, 185.00, 196.00, 207.65, 220.00, 233.08, 246.94,
+                  261.63, 277.18, 293.66, 311.13, 329.63]
 
+
+def transposeUp():
+    synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=1.0, osc2_waveform=Waveform.square, use_osc2=1.0)
+    global frequencyArray
+    frequencyArray = [i * 2 for i in frequencyArray]
+    keyArray = ['a', 'w', 's', 'e', 'd', 'f', 't', 'g', 'y', 'h', 'u', 'j', 'k', 'o', 'l', 'p',';']
+    soundArray = {}
+    for i in range (len(frequencyArray)):
+        newSound = Synthesizer.generate_constant_wave(frequencyArray[i], length=4)
+        soundArray.update({keyArray[i]:newSound})
+def transposeDown():
+    synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=1.0, osc2_waveform=Waveform.square, use_osc2=1.0)
+    global frequencyArray
+    frequencyArray = [i / 2 for i in frequencyArray]
+    keyArray = ['a', 'w', 's', 'e', 'd', 'f', 't', 'g', 'y', 'h', 'u', 'j', 'k', 'o', 'l', 'p',';']
+    soundArray = {}
+    for i in range (len(frequencyArray)):
+        newSound = synthesizer.generate_constant_wave(frequencyArray[i], length=4)
+        soundArray.update({keyArray[i]:newSound})
 
 # This function displays the image 'synthImage.jpg' to the game display. This image has the instructions for using the keyboard.
 def displayGraphics():
@@ -53,9 +72,8 @@ def main():
     pygame.mixer.init(44100, -16, 1, 2048)
     player = Player()
     player.open_stream()
-    synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=1.0, osc2_waveform=Waveform.sine, use_osc2=1.0)
-
-    frequencyArray = [130.81, 138.59, 146.83, 155.56, 164.81, 174.61, 185.00, 196.00, 207.65, 220.00, 233.08, 246.94, 261.63, 277.18, 293.66, 311.13, 329.63]
+    synthesizer = Synthesizer(osc1_waveform=Waveform.sine, osc1_volume=1.0, osc2_waveform=Waveform.square, use_osc2=1.0)
+    global frequencyArray
     keyArray = ['a', 'w', 's', 'e', 'd', 'f', 't', 'g', 'y', 'h', 'u', 'j', 'k', 'o', 'l', 'p',';']
     soundArray = {}
     for i in range (len(frequencyArray)):
