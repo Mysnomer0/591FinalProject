@@ -72,11 +72,11 @@ def keyboardInput(soundArray, keyArray):
             isPlaying[key] = False
 
         x, y = pygame.mouse.get_rel()
-        if x > 8 and currentOctave < 7:
+        if x > 12 and currentOctave < 7:
             currentOctave = currentOctave + 1
             transposeUp()
             keyboardInput(soundArray, keyArray)
-        elif x < -8 and currentOctave > 0:
+        elif x < -12 and currentOctave > 0:
             currentOctave = currentOctave - 1
             transposeDown()
             keyboardInput(soundArray, keyArray)
